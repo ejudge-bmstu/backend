@@ -18,7 +18,7 @@ public class Utils {
     public static final MediaType APPLICATION_JSON_UTF8 =
             new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
 
-    public static final String USERNAME = "usname";
+    public static final String USERNAME = "admin";
     public static final String PASSWORD = "123456";
 
     public static MockHttpServletRequestBuilder makePostRequest(String route, Object body) throws JsonProcessingException {

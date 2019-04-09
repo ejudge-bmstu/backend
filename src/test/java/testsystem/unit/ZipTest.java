@@ -101,7 +101,7 @@ public class ZipTest {
         File file = new File(Objects.requireNonNull(classLoader.getResource("ok.zip")).getFile());
         List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
 
-        String s = System.lineSeparator();
+        String s = "\r\n";
         Assert.assertEquals(2, tests.size());
         Assert.assertEquals("123", tests.get(0).getInput_data());
         Assert.assertEquals("456", tests.get(0).getOutput_data());
