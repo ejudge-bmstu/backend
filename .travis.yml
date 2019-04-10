@@ -6,6 +6,8 @@ services:
 before_script:
   - export TZ=Europe/Moscow
   - psql -U postgres -f database/db_dump.sql
+after_script:
+  - gradlew asciidoctor
 branches:
   only:
     - master

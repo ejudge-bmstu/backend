@@ -5,40 +5,29 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 import testsystem.Application;
 import testsystem.domain.*;
 import testsystem.repository.TaskRepository;
 import testsystem.repository.UserSolutionRepository;
 import testsystem.service.UserServiceImpl;
 
-import javax.servlet.Filter;
-import java.nio.charset.Charset;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
-@WebAppConfiguration
+@AutoConfigureRestDocs(outputDir = "build/snippets", uriPort = 3000)
 @Transactional
 public class UserControllerTest {
-    private static final MediaType APPLICATION_JSON_UTF8 =
-            new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private Filter springSecurityFilterChain;
 
     @Autowired
     private UserServiceImpl userService;
@@ -49,17 +38,26 @@ public class UserControllerTest {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Autowired
     private MockMvc mvc;
+
+    private FieldDescriptor[] resultsDescr;
 
     @Before
     public void init() {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .addFilters(springSecurityFilterChain)
-                .build();
+
+        resultsDescr = new FieldDescriptor[] {
+                fieldWithPath("[]").description("Список результатов"),
+                fieldWithPath("[].name").description("Название задачи"),
+                fieldWithPath("[].id").description("Идентификатор задачи"),
+                fieldWithPath("[].total").description("Общее количество тестов"),
+                fieldWithPath("[].passed").description("Количество пройденных тестов"),
+                fieldWithPath("[].result").description("Результат проверки"),
+                fieldWithPath("[].message").description("Отчет об ошибках"),
+                fieldWithPath("[].date").description("Дата прохождения")
+        };
 
         userSolutionRepository.findAll().forEach(s -> s.getUser().getSolutions().clear());
-
     }
 
     @Test
@@ -92,7 +90,8 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(task.getId().toString())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].passed", Matchers.isEmptyOrNullString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].result", Matchers.is("res1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].message", Matchers.is("ext1")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].message", Matchers.is("ext1")))
+                .andDo(Utils.generateDocsPost("results", null, resultsDescr));
 
     }
 
