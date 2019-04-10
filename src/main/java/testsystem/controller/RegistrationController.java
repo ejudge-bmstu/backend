@@ -8,14 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import testsystem.domain.EmailToken;
 import testsystem.domain.User;
 import testsystem.dto.EmailTokenDTO;
 import testsystem.dto.UserDTO;
 import testsystem.dto.UserView;
 import testsystem.event.OnRegistrationCompleteEvent;
-import testsystem.exception.EmailTokenIsExpiredException;
-import testsystem.exception.NoSuchEmailTokenException;
 import testsystem.service.UserServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,23 +46,7 @@ public class RegistrationController {
     @JsonView(UserView.UI.class)
     @ResponseStatus(HttpStatus.OK)
     public UserDTO confirmRegistration(@RequestBody @Valid EmailTokenDTO token) {
-
-        EmailToken verificationToken = userService.getVerificationToken(token.getToken());
-        if (verificationToken == null) {
-            throw new NoSuchEmailTokenException();
-        }
-
-        if (verificationToken.isTokenExpired()) {
-            throw new EmailTokenIsExpiredException();
-        }
-
-        User user = verificationToken.getUser();
-        userService.activateUser(user);
-
-        return UserDTO.userWithoutEmailAndWithoutToken(
-                user.getUsername(),
-                user.getRole().toString()
-        );
+        return userService.verificateUser(token);
     }
 
 }

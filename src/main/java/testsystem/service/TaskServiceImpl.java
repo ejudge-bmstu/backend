@@ -48,6 +48,10 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TestsystemService testsystemService;
 
+    public void setTestsystemService(TestsystemService service) {
+        testsystemService = service;
+    }
+
     @Override
     public TaskListDTO getTasksList(String id, int page, int limit, boolean categorized) {
         Category category = null;
@@ -76,7 +80,7 @@ public class TaskServiceImpl implements TaskService {
         String name = task.getName();
         String description = task.getDescription();
         String access = task.getReport_permission();
-        TaskCategoryDTO category = getCategoryDTO(task);
+        CategoryDTO category = getCategoryDTO(task);
         List<LanguageDTO> languages = getTotalLanguages();
         List<LimitDTO> limits = getLimitsDTO(task);
         List<ExampleDTO> examples = getExamplesDTO(task);
@@ -250,31 +254,35 @@ public class TaskServiceImpl implements TaskService {
             throw new TaskAlreadyExistsException(name, category.getName());
     }
 
-    private TaskCategoryDTO getCategoryDTO(Task task) {
-        TaskCategoryDTO categoryDTO = null;
+    private CategoryDTO getCategoryDTO(Task task) {
+        CategoryDTO categoryDTO = null;
         Category category = task.getCategory();
         if (category != null)
-            categoryDTO = new TaskCategoryDTO(category.getId().toString(), category.getName());
+            categoryDTO = new CategoryDTO(category.getId().toString(), category.getName(), category.getTasks().size());
         return categoryDTO;
     }
 
     private List<LimitDTO> getLimitsDTO(Task task) {
         List<LimitDTO> limits = new ArrayList<>();
-        task.getLimits().forEach(limit ->
-            limits.add(
-                    new LimitDTO(limit.getProgramming_language().toString(), limit.getMemory_limit(), limit.getTime_limit())
-            )
-        );
+        if (task.getLimits() != null) {
+            task.getLimits().forEach(limit ->
+                limits.add(
+                        new LimitDTO(limit.getProgramming_language().toString(), limit.getMemory_limit(), limit.getTime_limit())
+                )
+            );
+        }
         return limits;
     }
 
     private List<ExampleDTO> getExamplesDTO(Task task) {
         List<ExampleDTO> examples = new ArrayList<>();
-        task.getExamples().forEach(example ->
-            examples.add(
-                    new ExampleDTO(example.getInput_data(), example.getOutput_data())
-            )
-        );
+        if (task.getExamples() != null) {
+            task.getExamples().forEach(example ->
+                    examples.add(
+                            new ExampleDTO(example.getInput_data(), example.getOutput_data())
+                    )
+            );
+        }
         return examples;
     }
 

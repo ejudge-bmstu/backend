@@ -14,7 +14,7 @@ public class TaskDescriptionDTO {
     private String name;
     private String description;
     private String access_report;
-    private TaskCategoryDTO category;
+    private CategoryDTO category;
     private List<LanguageDTO> languages;
     private List<LimitDTO> limits;
     private List<ExampleDTO> examples;

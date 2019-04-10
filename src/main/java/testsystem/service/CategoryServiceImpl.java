@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
                 new CategoryDTO(
                         category.getId().toString(),
                         category.getName(),
-                        category.getTasks().size()
+                        category.getTasks() == null ? 0 : category.getTasks().size()
                 )
         ));
 

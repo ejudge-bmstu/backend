@@ -8,9 +8,12 @@ import testsystem.domain.EmailToken;
 import testsystem.domain.Profile;
 import testsystem.domain.Task;
 import testsystem.domain.User;
+import testsystem.dto.EmailTokenDTO;
 import testsystem.dto.ResultDTO;
 import testsystem.dto.UserDTO;
 import testsystem.exception.EmailAlreadyExistsException;
+import testsystem.exception.EmailTokenIsExpiredException;
+import testsystem.exception.NoSuchEmailTokenException;
 import testsystem.exception.UserAlreadyExistsException;
 import testsystem.repository.EmailTokenRepository;
 import testsystem.repository.ProfileRepository;
@@ -61,18 +64,33 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Override
+    public UserDTO verificateUser(EmailTokenDTO token) {
+        EmailToken verificationToken = this.getVerificationToken(token.getToken());
+        if (verificationToken == null) {
+            throw new NoSuchEmailTokenException();
+        }
+
+        if (verificationToken.isTokenExpired()) {
+            throw new EmailTokenIsExpiredException();
+        }
+
+        User user = verificationToken.getUser();
+        this.activateUser(user);
+
+        return UserDTO.userWithoutEmailAndWithoutToken(
+                user.getUsername(),
+                user.getRole().toString()
+        );
+    }
+
     private boolean emailExist(String email) {
         User user = userRepository.findByEmail(email);
         return user != null;
     }
 
-    @Override
-    public User findUserByVerificationToken(String verificationToken) {
-        return tokenRepository.findByToken(verificationToken).getUser();
-    }
 
-    @Override
-    public EmailToken getVerificationToken(String token) {
+    private EmailToken getVerificationToken(String token) {
         return tokenRepository.findByToken(token);
     }
 
@@ -93,23 +111,25 @@ public class UserServiceImpl implements UserService {
         List<ResultDTO> results = new ArrayList<>();
 
         User user = getCurrentUser();
-        user.getSolutions().forEach(userSolution -> {
-            Task task = userSolution.getTask();
-            results.add(new ResultDTO(
-                    task.getName(),
-                    task.getId().toString(),
-                    task.getTests().size(),
-                    userSolution.getStatus().getPassed(),
-                    userSolution.getStatus().getResult(),
-                    task.getReport_permission().equals("full_access") ?
-                        userSolution.getStatus().getExtended_information() : null,
-                    userSolution.getSolution_date()));
-        });
+        if (user.getSolutions() != null) {
+            user.getSolutions().forEach(userSolution -> {
+                Task task = userSolution.getTask();
+                results.add(new ResultDTO(
+                        task.getName(),
+                        task.getId().toString(),
+                        task.getTests().size(),
+                        userSolution.getStatus().getPassed(),
+                        userSolution.getStatus().getResult(),
+                        task.getReport_permission().equals("full_access") ?
+                                userSolution.getStatus().getExtended_information() : null,
+                        userSolution.getSolution_date()));
+            });
+        }
 
         return results;
     }
 
-    User getCurrentUser() {
+    public User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return findByUsername(username);
     }

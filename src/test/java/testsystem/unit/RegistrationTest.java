@@ -1,4 +1,4 @@
-package testsystem.unit_test;
+package testsystem.unit;
 
 import org.junit.Assert;
 import org.junit.Before;

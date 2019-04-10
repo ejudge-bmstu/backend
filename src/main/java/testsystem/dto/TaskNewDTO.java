@@ -42,4 +42,11 @@ public class TaskNewDTO {
     @NotEmpty(message = "Доступ к отчету не должен быть пуст")
     @Pattern(regexp = "full_access|no_access", message = "Возможные значения: full_access, no_access")
     private String access_report;
+
+    public TaskNewDTO(String name, String description, String category, String access_report) {
+        this.name = name;
+        this.description = description;
+        this.category = category;
+        this.access_report = access_report;
+    }
 }

@@ -25,6 +25,15 @@ public class CategoryDTO {
               groups = {CategoryGroup.ADD.class, CategoryGroup.EDIT.class})
     private String name;
 
-    private int count;
+    private Integer count;
+
+    public CategoryDTO(String name) {
+        this.name = name;
+    }
+
+    public CategoryDTO(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
 }

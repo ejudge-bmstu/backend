@@ -2,6 +2,7 @@ package testsystem.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import testsystem.dto.TaskDTO;
@@ -35,6 +36,7 @@ public class TaskController {
 
     @PostMapping(value = "/task/add", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
+    @Secured("ROLE_ADMIN")
     public void addTask(@Valid TaskNewDTO taskNewDTO,
                         @RequestParam(value = "inputs[]", defaultValue = "") String[] inputs,
                         @RequestParam(value = "ouputs[]", defaultValue = "") String[] outputs,

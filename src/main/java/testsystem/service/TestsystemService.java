@@ -17,7 +17,7 @@ public class TestsystemService {
         this.port = env.getProperty("testsystem.port");
     }
 
-    int sendRequestToTestingServer(String solId) throws IOException {
+    public int sendRequestToTestingServer(String solId) throws IOException {
         URL url = new URL("http://" + host + ":" + port + "/" + solId);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");

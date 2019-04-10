@@ -23,10 +23,7 @@ DROP DATABASE ejudge;
 -- Name: ejudge; Type: DATABASE; Schema: -; Owner: -
 --
 
-CREATE DATABASE ejudge WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.UTF-8' LC_CTYPE = 'en_US.UTF-8';
-
-
-\connect ejudge
+CREATE DATABASE ejudge WITH TEMPLATE = template0 ENCODING = 'UTF8';
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -37,6 +34,13 @@ SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
+
+
+CREATE USER admin with encrypted password 'admin';
+
+GRANT ALL PRIVILEGES on database ejudge to admin;
+
+\connect ejudge admin
 
 --
 -- TOC entry 1 (class 3079 OID 13041)
@@ -219,7 +223,7 @@ CREATE TABLE public.tasks (
     description text,
     report_permission text NOT NULL,
     category_id uuid,
-    owner_id uuid NOT NULL
+    owner_id uuid
 );
 
 
@@ -526,6 +530,29 @@ ALTER TABLE ONLY public.email_tokens
 --
 
 GRANT ALL ON SCHEMA public TO PUBLIC;
+
+INSERT INTO public.profiles VALUES('ab598598-e12e-4f3d-be82-40ba87ed58ad', NULL, NULL, NULL, NULL);
+INSERT INTO public.profiles VALUES('72c3c2cd-a431-4cd8-8eca-9e7aad115159', NULL, NULL, NULL, NULL);
+
+INSERT INTO public.users
+    VALUES('56b65658-418a-4c16-9723-384a40937f0d',
+           'admin',
+           '$2a$10$rjzb.C62wmsvQiMtNdFwcOL.MVJKYomy4CwhTAaOidpOsULlEDcMm',
+           'mail@mail',
+           'ab598598-e12e-4f3d-be82-40ba87ed58ad',
+           'admin',
+           true);
+
+
+
+INSERT INTO public.users
+    VALUES('8100ffac-0f55-4c37-b0c6-6e13df640c47',
+           'user',
+           '$2a$10$rjzb.C62wmsvQiMtNdFwcOL.MVJKYomy4CwhTAaOidpOsULlEDcMm',
+           'mail@mail',
+           '72c3c2cd-a431-4cd8-8eca-9e7aad115159',
+           'user',
+           true);
 
 
 -- Completed on 2019-04-05 10:49:13 MSK

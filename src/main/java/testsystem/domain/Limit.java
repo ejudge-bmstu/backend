@@ -30,4 +30,9 @@ public class Limit {
     @Enumerated(EnumType.STRING)
     private ProgrammingLanguage programming_language;
 
+    public Limit(Integer memory_limit, Integer time_limit, ProgrammingLanguage programming_language) {
+        this.memory_limit = memory_limit;
+        this.time_limit = time_limit;
+        this.programming_language = programming_language;
+    }
 }

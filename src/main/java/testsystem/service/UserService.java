@@ -1,7 +1,7 @@
 package testsystem.service;
 
-import testsystem.domain.EmailToken;
 import testsystem.domain.User;
+import testsystem.dto.EmailTokenDTO;
 import testsystem.dto.ResultDTO;
 import testsystem.dto.UserDTO;
 
@@ -13,9 +13,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    User findUserByVerificationToken(String verificationToken);
-
-    EmailToken getVerificationToken(String token);
+    UserDTO verificateUser(EmailTokenDTO token);
 
     void createEmailToken(User user, String token);
 
