@@ -1,0 +1,134 @@
+= Документация REST-API
+Еджудж;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 1
+:sectlinks:
+
+[[category-add]]
+=== Добавление категории
+
+.Запрос
+include::{snippets}/category-add/http-request.adoc[]
+
+.Тело запроса
+include::{snippets}/category-add/request-fields.adoc[]
+
+.Ответ
+include::{snippets}/category-add/http-response.adoc[]
+
+[[category-edit]]
+=== Изменение названия категории
+
+.Запрос
+include::{snippets}/category-edit/http-request.adoc[]
+
+.Тело запроса
+include::{snippets}/category-edit/request-fields.adoc[]
+
+.Ответ
+include::{snippets}/category-edit/http-response.adoc[]
+
+[[category-delete]]
+=== Удаление категории
+
+.Запрос
+include::{snippets}/category-delete/http-request.adoc[]
+
+.Тело запроса
+include::{snippets}/category-delete/request-fields.adoc[]
+
+.Ответ
+include::{snippets}/category-edit/http-response.adoc[]
+
+[[category-list]]
+=== Получение списка категорий
+
+.Запрос
+include::{snippets}/category-list/http-request.adoc[]
+
+.Ответ
+include::{snippets}/category-list/http-response.adoc[]
+
+.Тело ответа
+include::{snippets}/category-list/response-fields.adoc[]
+
+[[task-list]]
+=== Получение списка задач в категории
+
+.Запрос
+include::{snippets}/task-list/http-request.adoc[]
+
+.Параметры запроса
+include::{snippets}/task-list/request-parameters.adoc[]
+
+.Ответ
+include::{snippets}/task-list/http-response.adoc[]
+
+.Тело ответа
+include::{snippets}/task-list/response-fields.adoc[]
+
+[[uncategorized-task-list]]
+=== Получение списка задач без категории
+
+.Запрос
+include::{snippets}/uncategorized-task-list/http-request.adoc[]
+
+.Ответ
+include::{snippets}/uncategorized-task-list/http-response.adoc[]
+
+.Тело ответа
+include::{snippets}/uncategorized-task-list/response-fields.adoc[]
+
+[[task-add]]
+=== Добавление задачи
+
+.Запрос
+include::{snippets}/task-add/http-request.adoc[]
+
+.Параметры запроса
+include::{snippets}/task-add/request-parameters.adoc[]
+
+.Ответ
+include::{snippets}/task-add/http-response.adoc[]
+
+[[task]]
+=== Получение задачи
+
+.Запрос
+include::{snippets}/task/http-request.adoc[]
+
+.Параметры запроса (path)
+include::{snippets}/task/path-parameters.adoc[]
+
+.Ответ
+include::{snippets}/task/http-response.adoc[]
+
+.Тело ответа
+include::{snippets}/task/response-fields.adoc[]
+
+[[solution]]
+=== Отправка решения
+
+.Запрос
+include::{snippets}/solution-add/http-request.adoc[]
+
+.Параметры запроса
+include::{snippets}/solution-add/request-parameters.adoc[]
+
+.Ответ
+include::{snippets}/solution-add/http-response.adoc[]
+
+[[results]]
+=== Просмотр результатов текущего пользователя
+
+.Запрос
+include::{snippets}/results/http-request.adoc[]
+
+.Ответ
+include::{snippets}/results/http-response.adoc[]
+
+.Тело ответа
+include::{snippets}/results/response-fields.adoc[]
