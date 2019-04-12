@@ -41,8 +41,8 @@ public class RegistrationListener {
     public RegistrationListener(UserService service, Environment env) {
         this.service = service;
 
-        this.host = env.getProperty("server.address");
-        this.port = env.getProperty("server.port");
+        this.host = env.getProperty("frontend.address");
+        this.port = env.getProperty("frontend.port");
 
         mailProp = new Properties();
         configurateMailSender();

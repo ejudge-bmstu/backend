@@ -1,18 +1,25 @@
 buildscript {
     ext {
         springBootVersion = '2.1.0.RELEASE'
+        asciidoctorVersion = '1.5.9.2'
     }
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+
+    dependencies {
+        classpath ("org.asciidoctor:asciidoctor-gradle-plugin:${asciidoctorVersion}")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.asciidoctor.convert'
 
 group = 'backend'
 version = '0.0.1-SNAPSHOT'
@@ -25,6 +32,18 @@ bootJar {
 
 repositories {
     mavenCentral()
+}
+
+asciidoctor {
+    dependsOn test
+    
+    backends = ['html5']
+    options doctype: 'book'
+
+    attributes 'snippets' : file('build/snippets')
+
+    outputDir 'src/docs'
+    sourceDir 'src/main/resources'
 }
 
 
@@ -40,6 +59,7 @@ dependencies {
     testImplementation('org.springframework.security:spring-security-test')
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+    testCompile group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc', version: '2.0.3.RELEASE'
     compileOnly 'org.projectlombok:lombok:1.18.6'
     compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.15.Final'
     annotationProcessor 'org.projectlombok:lombok:1.18.6'

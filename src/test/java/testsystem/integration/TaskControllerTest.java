@@ -6,54 +6,45 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.payload.FieldDescriptor;
+import org.springframework.restdocs.request.ParameterDescriptor;
+import org.springframework.restdocs.request.RequestPartDescriptor;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
 import testsystem.Application;
-import testsystem.domain.Category;
-import testsystem.domain.Limit;
-import testsystem.domain.ProgrammingLanguage;
-import testsystem.domain.Task;
+import testsystem.domain.*;
 import testsystem.repository.CategoryRepository;
 import testsystem.repository.TaskRepository;
 import testsystem.service.TaskServiceImpl;
 import testsystem.service.TestsystemService;
 
-import javax.servlet.Filter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
+
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
-@WebAppConfiguration
+@AutoConfigureRestDocs(outputDir = "build/snippets", uriPort = 3000)
 @Transactional
 public class TaskControllerTest {
-
-    private static final MediaType APPLICATION_JSON_UTF8 =
-            new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private Filter springSecurityFilterChain;
 
     @Autowired
     private TaskRepository taskRepository;
@@ -64,14 +55,82 @@ public class TaskControllerTest {
     @Autowired
     private TaskServiceImpl taskService;
 
+    @Autowired
     private MockMvc mvc;
+
+    private ParameterDescriptor[] taskAddDescr;
+    private RequestPartDescriptor[] taskAddFiles;
+    private ParameterDescriptor[] taskListParamsDescr;
+    private FieldDescriptor[] taskListDescr;
+    private FieldDescriptor[] taskDescr;
+    private ParameterDescriptor[] taskPath;
+    private ParameterDescriptor[] solutionAddDescr;
+    private RequestPartDescriptor[] solutionAddFiles;
+    private FieldDescriptor[] errorDescr;
 
     @Before
     public void init() {
-        mvc = MockMvcBuilders
-                .webAppContextSetup(context)
-                .addFilters(springSecurityFilterChain)
-                .build();
+        taskListDescr = new FieldDescriptor[] {
+                fieldWithPath("total").description("Общее число страниц"),
+                fieldWithPath("name").description("Название категории"),
+                fieldWithPath("tasks").description("Список задач в категории"),
+                fieldWithPath("tasks[].id").description("Идентификатор задачи"),
+                fieldWithPath("tasks[].name").description("Название задачи")
+        };
+
+        taskListParamsDescr = new ParameterDescriptor[] {
+                parameterWithName("id").description("Идентификатор категории"),
+                parameterWithName("page").description("Номер страницы, начиная с 0, по умолчанию 0"),
+                parameterWithName("limit").description("Размер страницы, по умолчанию 12")
+        };
+
+        taskAddDescr = new ParameterDescriptor[] {
+                parameterWithName("name").description("Название задачи"),
+                parameterWithName("description").description("Условие задачи"),
+                parameterWithName("category").description("Идентификатор категории, в которую добавляется задача"),
+                parameterWithName("access_report").description("Доступ к отчету (full_access/no_access)"),
+                parameterWithName("time_limit_c").description("Ограничение по времени для языка C"),
+                parameterWithName("memory_limit_c").description("Ограничение по памяти для языка C"),
+                parameterWithName("time_limit_cpp").description("Ограничение по времени для языка C++"),
+                parameterWithName("memory_limit_cpp").description("Ограничение по памяти для языка C++"),
+                parameterWithName("time_limit_python").description("Ограничение по времени для языка Python"),
+                parameterWithName("memory_limit_python").description("Ограничение по памяти для языка Python")
+        };
+
+        taskAddFiles = new RequestPartDescriptor[] {
+                partWithName("tests").description("Zip-архив с тестами")
+        };
+
+        taskDescr = new FieldDescriptor[] {
+                fieldWithPath("name").description("Название задачи"),
+                fieldWithPath("description").description("Условие задачи"),
+                fieldWithPath("access_report").description("Доступ к отчету (full_access/no_access)"),
+                fieldWithPath("category.id").description("Идентификатор категории"),
+                fieldWithPath("category.name").description("Название категории"),
+                fieldWithPath("category.count").description("Число задач в категории"),
+                fieldWithPath("languages").description("Список доступных языков"),
+                fieldWithPath("languages[].name").description("Название языка"),
+                fieldWithPath("limits").description("Список ограничений"),
+                fieldWithPath("limits[].language").description("Язык, для которого действует ограничение"),
+                fieldWithPath("limits[].memory").description("Ограничение по памяти"),
+                fieldWithPath("limits[].time").description("Ограничение по времени"),
+                fieldWithPath("examples").description("Примеры входынх и выходных данных"),
+                fieldWithPath("examples[].input").description("Входные данные"),
+                fieldWithPath("examples[].output").description("Выходные данные")
+        };
+
+        taskPath = new ParameterDescriptor[] {
+                parameterWithName("id").description("Идентификатор задачи")
+        };
+
+        solutionAddDescr = new ParameterDescriptor[] {
+                parameterWithName("id").description("Индентификатор решаемой задачи")
+        };
+
+        solutionAddFiles = new RequestPartDescriptor[] {
+                partWithName("solution").description("Файл с решением, расширение .py/.c/.cpp")
+        };
+
 
         categoryRepository.deleteAll();
         taskRepository.deleteAll();
@@ -116,7 +175,8 @@ public class TaskControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("cat1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tasks", Matchers.hasSize(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tasks[0].name", Matchers.is("task1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.tasks[1].name", Matchers.is("task2")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.tasks[1].name", Matchers.is("task2")))
+                .andDo(Utils.generateDocsGet("task-list", taskListParamsDescr, taskListDescr));
     }
 
     @Test
@@ -149,7 +209,8 @@ public class TaskControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.nullValue()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tasks", Matchers.hasSize(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tasks[0].name", Matchers.is("task1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.tasks[1].name", Matchers.is("task2")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.tasks[1].name", Matchers.is("task2")))
+                .andDo(Utils.generateDocsGet("uncategorized-task-list", null, taskListDescr));
     }
 
     @Test
@@ -197,7 +258,8 @@ public class TaskControllerTest {
 
         mvc.perform(Utils.makeMultipartRequest("/task/add", fstmp, params))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(Utils.generateDocsMultipart("task-add", taskAddDescr, taskAddFiles, null));
     }
 
     @Test
@@ -248,9 +310,10 @@ public class TaskControllerTest {
         Limit limit2 = new Limit(3,4, ProgrammingLanguage.c);
         Limit limit3 = new Limit(5,6, ProgrammingLanguage.cpp);
         task.setLimits(Arrays.asList(limit1, limit2, limit3));
+        task.setExamples(Collections.singletonList(new Example("123", "qwe", null)));
         Task saved = taskRepository.save(task);
 
-        mvc.perform(Utils.makeGetRequest("/task/" + saved.getId().toString()))
+        mvc.perform(Utils.makeGetPathRequest("/task/{id}", saved.getId().toString()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limits",  Matchers.hasSize(3)))
@@ -262,7 +325,8 @@ public class TaskControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limits[1].time",  Matchers.is(4)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limits[2].language",  Matchers.is("c++")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.limits[2].memory",  Matchers.is(5)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.limits[2].time",  Matchers.is(6)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.limits[2].time",  Matchers.is(6)))
+                .andDo(Utils.generateDocsGetPath("task", taskPath, taskDescr));
     }
 
     @Test
@@ -295,7 +359,8 @@ public class TaskControllerTest {
 
         mvc.perform(Utils.makeMultipartRequest("/task/solution", fstmp, params))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+        .andDo(Utils.generateDocsMultipart("solution-add", solutionAddDescr, solutionAddFiles, null));
 
     }
 
