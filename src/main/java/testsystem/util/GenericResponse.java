@@ -16,11 +16,6 @@ public class GenericResponse {
     private String message;
     private String type;
 
-    public GenericResponse(final String message) {
-        super();
-        this.message = message;
-    }
-
     public GenericResponse(List<ObjectError> allErrors, String error) {
         this.type = error;
         this.message = allErrors

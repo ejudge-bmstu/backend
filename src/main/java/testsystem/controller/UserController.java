@@ -11,7 +11,7 @@ import testsystem.service.UserServiceImpl;
 import java.util.List;
 
 @RestController
-public class UserController {
+class UserController {
     @Autowired
     private UserServiceImpl userService;
 

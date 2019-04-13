@@ -23,7 +23,7 @@ import static testsystem.security.SecurityConstants.SIGN_UP_URL;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
+    @SuppressWarnings("WeakerAccess")
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

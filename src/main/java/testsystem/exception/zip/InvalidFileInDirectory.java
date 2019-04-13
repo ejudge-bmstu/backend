@@ -2,7 +2,7 @@ package testsystem.exception.zip;
 
 public final class InvalidFileInDirectory extends ZipFileException {
 
-    private String dirname;
+    private final String dirname;
 
     public InvalidFileInDirectory(String dirname) { this.dirname = dirname; }
 

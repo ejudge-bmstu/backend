@@ -34,7 +34,7 @@ public class ZipTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("not_zip.txt")).getFile());
         try {
-            List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
+            method.invoke(taskService, file);
         } catch (InvocationTargetException e) {
             Assert.assertSame(OpenFileException.class, e.getCause().getClass());
         }
@@ -45,7 +45,7 @@ public class ZipTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("empty.zip")).getFile());
         try {
-            List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
+            method.invoke(taskService, file);
         } catch (InvocationTargetException e) {
             Assert.assertSame(NoOneTestException.class, e.getCause().getClass());
         }
@@ -56,7 +56,7 @@ public class ZipTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("invalid_file_in_zip.zip")).getFile());
         try {
-            List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
+            method.invoke(taskService, file);
         } catch (InvocationTargetException e) {
             Assert.assertSame(InvalidFileInZip.class, e.getCause().getClass());
         }
@@ -67,7 +67,7 @@ public class ZipTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("invalid_file_in_dir.zip")).getFile());
         try {
-            List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
+            method.invoke(taskService, file);
         } catch (InvocationTargetException e) {
             Assert.assertSame(InvalidFileInDirectory.class, e.getCause().getClass());
         }
@@ -78,7 +78,7 @@ public class ZipTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("no_in.zip")).getFile());
         try {
-            List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
+            method.invoke(taskService, file);
         } catch (InvocationTargetException e) {
             Assert.assertSame(NoInputData.class, e.getCause().getClass());
         }
@@ -89,12 +89,13 @@ public class ZipTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("no_out.zip")).getFile());
         try {
-            List<testsystem.domain.Test> tests = (List<testsystem.domain.Test>) method.invoke(taskService, file);
+            method.invoke(taskService, file);
         } catch (InvocationTargetException e) {
             Assert.assertSame(NoOutputData.class, e.getCause().getClass());
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void success() throws IllegalAccessException, InvocationTargetException {
         ClassLoader classLoader = getClass().getClassLoader();

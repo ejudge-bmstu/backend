@@ -1,15 +1,15 @@
 package testsystem.event;
 
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEvent;
 import testsystem.domain.User;
 import testsystem.service.UserServiceImpl;
 
-@Data
+@Getter
 public class OnRegistrationCompleteEvent extends ApplicationEvent {
-    private String appUrl;
-    private User user;
+    private final String appUrl;
+    private final User user;
 
     @Autowired
     UserServiceImpl service;

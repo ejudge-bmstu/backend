@@ -21,17 +21,17 @@ import static testsystem.security.SecurityConstants.SIGN_UP_CONFIRM_URL;
 
 @Service
 @EnableAsync
-public class RegistrationListener {
+class RegistrationListener {
 
-    private UserService service;
+    private final UserService service;
 
     private Sender sender;
 
-    private String host;
+    private final String host;
 
-    private String port;
+    private final String port;
 
-    private Properties mailProp;
+    private final Properties mailProp;
 
     private static final String SUBJECT = "Подтверждение регистрации";
 
@@ -59,7 +59,7 @@ public class RegistrationListener {
         String messageFull = MESSAGE + String.format("http://%s:%s%s", host, port, confirmationUrl);
 
         if (sender != null)
-            sender.send(SUBJECT, messageFull, user.getEmail());
+            sender.send(messageFull, user.getEmail());
     }
 
     private void configurateMailSender() {
@@ -75,8 +75,8 @@ public class RegistrationListener {
 
     class Sender {
 
-        private String username;
-        private Session session;
+        private final String username;
+        private final Session session;
 
         Sender(String username, String password) {
             this.username = username;
@@ -87,13 +87,13 @@ public class RegistrationListener {
             });
         }
 
-        void send(String subject, String text, String toEmail) {
+        void send(String text, String toEmail) {
 
             try {
                 MimeMessage message = new MimeMessage(session);
                 message.setFrom(new InternetAddress(username));
                 message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-                message.setSubject(subject);
+                message.setSubject(RegistrationListener.SUBJECT);
                 message.setText(text);
 
                 Transport.send(message);

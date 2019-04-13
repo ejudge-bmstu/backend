@@ -8,9 +8,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 
-public class CustomUserDetails implements UserDetails {
+class CustomUserDetails implements UserDetails {
 
-    private User user;
+    private final User user;
 
     CustomUserDetails(User user) {
         this.user = user;
@@ -51,7 +51,7 @@ public class CustomUserDetails implements UserDetails {
         return user.isEnabled();
     }
 
-    public String getRole() {
+    String getRole() {
         return user.getRole().toString();
     }
 

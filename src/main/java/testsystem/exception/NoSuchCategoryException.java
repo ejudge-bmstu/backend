@@ -2,7 +2,9 @@ package testsystem.exception;
 
 public final class NoSuchCategoryException extends AppException {
 
-    public NoSuchCategoryException() { }
+    public NoSuchCategoryException() {
+        super();
+    }
 
     @Override
     public String getMessage() {

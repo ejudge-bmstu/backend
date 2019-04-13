@@ -2,7 +2,9 @@ package testsystem.exception;
 
 public final class SolutionFileIOError extends AppException {
 
-    public SolutionFileIOError() { }
+    public SolutionFileIOError() {
+        super();
+    }
 
     @Override
     public String getMessage() {

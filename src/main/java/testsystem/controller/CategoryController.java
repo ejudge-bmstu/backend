@@ -11,7 +11,7 @@ import testsystem.dto.CategoryListDTO;
 import testsystem.service.CategoryServiceImpl;
 
 @RestController
-public class CategoryController {
+class CategoryController {
 
     @Autowired
     private CategoryServiceImpl categoryService;

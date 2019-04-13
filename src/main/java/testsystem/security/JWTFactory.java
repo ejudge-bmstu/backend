@@ -7,8 +7,8 @@ import java.util.Date;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static testsystem.security.SecurityConstants.*;
 
-public class JWTFactory {
-    public static String create(String username) {
+class JWTFactory {
+    static String create(String username) {
         return TOKEN_PREFIX + JWT.create()
                 .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

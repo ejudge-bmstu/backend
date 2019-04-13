@@ -43,11 +43,11 @@ public class CategoryControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private FieldDescriptor categoryAddDescr[];
-    private FieldDescriptor categoryEditDescr[];
-    private FieldDescriptor categoryDeleteDescr[];
-    private FieldDescriptor categoryListDescr[];
-    private FieldDescriptor errorDescr[];
+    private FieldDescriptor[] categoryAddDescr;
+    private FieldDescriptor[] categoryEditDescr;
+    private FieldDescriptor[] categoryDeleteDescr;
+    private FieldDescriptor[] categoryListDescr;
+//    private FieldDescriptor errorDescr[];
 
     @Before
     public void init() {
@@ -72,10 +72,10 @@ public class CategoryControllerTest {
                 fieldWithPath("categories[].count").description("Количество задач в категории")
         };
 
-        errorDescr = new FieldDescriptor[]{
-                fieldWithPath("type").description("Тип ошибки"),
-                fieldWithPath("message").description("Сообщение с информацией об ошибке")
-        };
+//        errorDescr = new FieldDescriptor[]{
+//                fieldWithPath("type").description("Тип ошибки"),
+//                fieldWithPath("message").description("Сообщение с информацией об ошибке")
+//        };
 
         categoryRepository.deleteAll();
     }

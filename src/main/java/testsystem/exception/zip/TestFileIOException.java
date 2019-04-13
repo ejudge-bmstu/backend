@@ -4,7 +4,9 @@ import testsystem.exception.AppException;
 
 public final class TestFileIOException extends AppException {
 
-    public TestFileIOException() { }
+    public TestFileIOException() {
+        super();
+    }
 
     @Override
     public String getMessage() {

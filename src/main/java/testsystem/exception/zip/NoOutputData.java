@@ -2,7 +2,7 @@ package testsystem.exception.zip;
 
 public final class NoOutputData extends ZipFileException {
 
-    private String dirname;
+    private final String dirname;
 
     public NoOutputData(String dirname) { this.dirname = dirname; }
 

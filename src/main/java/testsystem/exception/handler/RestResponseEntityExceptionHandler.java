@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,7 +17,7 @@ import testsystem.exception.zip.ZipFileException;
 import testsystem.util.GenericResponse;
 
 @ControllerAdvice
-public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     public RestResponseEntityExceptionHandler() {
         super();
@@ -28,6 +29,16 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                                                                   final HttpHeaders headers,
                                                                   final HttpStatus status,
                                                                   final WebRequest request) {
+        final BindingResult result = ex.getBindingResult();
+        final GenericResponse bodyOfResponse = new GenericResponse(result.getAllErrors(), "Invalid" + result.getObjectName());
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @Override
+    public ResponseEntity<Object> handleBindException(final BindException ex,
+                                                      final HttpHeaders headers,
+                                                      final HttpStatus status,
+                                                      final WebRequest request) {
         final BindingResult result = ex.getBindingResult();
         final GenericResponse bodyOfResponse = new GenericResponse(result.getAllErrors(), "Invalid" + result.getObjectName());
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);

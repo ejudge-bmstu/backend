@@ -3,6 +3,7 @@ package testsystem.exception;
 public final class ExampleException extends AppException {
 
     public ExampleException() {
+        super();
     }
 
     @Override

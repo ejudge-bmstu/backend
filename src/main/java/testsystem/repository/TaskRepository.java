@@ -10,6 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, UUID> {
-    public List<Task> findByCategory(Category category);
-    public Page<Task> findByCategory(Category category, Pageable pageable);
+    List<Task> findByCategory(Category category);
+    Page<Task> findByCategory(Category category, Pageable pageable);
 }

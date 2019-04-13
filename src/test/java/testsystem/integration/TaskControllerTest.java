@@ -74,7 +74,7 @@ public class TaskControllerTest {
     private ParameterDescriptor[] taskPath;
     private ParameterDescriptor[] solutionAddDescr;
     private RequestPartDescriptor[] solutionAddFiles;
-    private FieldDescriptor[] errorDescr;
+    //private FieldDescriptor[] errorDescr;
     private FieldDescriptor[] resultsDescr;
 
     @Before
@@ -406,7 +406,7 @@ public class TaskControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.is("NoSuchTask")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.is("Задача не найдена")));;
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.is("Задача не найдена")));
 
     }
 

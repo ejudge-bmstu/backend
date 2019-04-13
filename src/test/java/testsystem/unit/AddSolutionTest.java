@@ -40,9 +40,9 @@ public class AddSolutionTest {
         File file = new File(Objects.requireNonNull(classLoader.getResource("ok.py")).getFile());
 
         FileInputStream fi1 = new FileInputStream(file);
-        MockMultipartFile fstmp = new MockMultipartFile("solution", file.getName(), "multipart/form-data", fi1);
+        MockMultipartFile mf = new MockMultipartFile("solution", file.getName(), "multipart/form-data", fi1);
 
-        Answer answer = (Answer) method.invoke(taskService, fstmp);
+        Answer answer = (Answer) method.invoke(taskService, mf);
 
         Assert.assertEquals(ProgrammingLanguage.python, answer.getProgramming_language());
         Assert.assertEquals("python file" + System.lineSeparator(), answer.getProgram_text());
@@ -77,7 +77,7 @@ public class AddSolutionTest {
     }
 
     @Test
-    public void addFileFail() throws IOException, InvocationTargetException, IllegalAccessException {
+    public void addFileFail() throws IOException, IllegalAccessException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("invalid_extension.txt")).getFile());
 
@@ -93,7 +93,7 @@ public class AddSolutionTest {
     }
 
     @Test
-    public void addFileFailNoExt() throws IOException, InvocationTargetException, IllegalAccessException {
+    public void addFileFailNoExt() throws IOException, IllegalAccessException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(Objects.requireNonNull(classLoader.getResource("no_extension")).getFile());
 
