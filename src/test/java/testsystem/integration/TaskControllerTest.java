@@ -24,8 +24,10 @@ import testsystem.Application;
 import testsystem.domain.*;
 import testsystem.repository.CategoryRepository;
 import testsystem.repository.TaskRepository;
+import testsystem.repository.UserSolutionRepository;
 import testsystem.service.TaskServiceImpl;
 import testsystem.service.TestsystemService;
+import testsystem.service.UserServiceImpl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,6 +55,12 @@ public class TaskControllerTest {
     private CategoryRepository categoryRepository;
 
     @Autowired
+    private UserServiceImpl userService;
+
+    @Autowired
+    private UserSolutionRepository userSolutionRepository;
+
+    @Autowired
     private TaskServiceImpl taskService;
 
     @Autowired
@@ -67,6 +75,7 @@ public class TaskControllerTest {
     private ParameterDescriptor[] solutionAddDescr;
     private RequestPartDescriptor[] solutionAddFiles;
     private FieldDescriptor[] errorDescr;
+    private FieldDescriptor[] resultsDescr;
 
     @Before
     public void init() {
@@ -129,6 +138,19 @@ public class TaskControllerTest {
 
         solutionAddFiles = new RequestPartDescriptor[] {
                 partWithName("solution").description("Файл с решением, расширение .py/.c/.cpp")
+        };
+
+        resultsDescr = new FieldDescriptor[] {
+                fieldWithPath("[]").description("Список результатов"),
+                fieldWithPath("[].task_name").description("Название задачи"),
+                fieldWithPath("[].task_id").description("Идентификатор задачи"),
+                fieldWithPath("[].user_name").description("Имя пользователя, решившего задачу"),
+                fieldWithPath("[].user_id").description("Идентификатор пользователя, решившего задачу"),
+                fieldWithPath("[].total").description("Общее количество тестов"),
+                fieldWithPath("[].passed").description("Количество пройденных тестов"),
+                fieldWithPath("[].result").description("Результат проверки"),
+                fieldWithPath("[].message").description("Отчет об ошибках"),
+                fieldWithPath("[].date").description("Дата прохождения")
         };
 
 
@@ -385,6 +407,34 @@ public class TaskControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.type", Matchers.is("NoSuchTask")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.is("Задача не найдена")));;
+
+    }
+
+    @Test
+    public void nonEmptyFullAccessResults() throws Exception {
+        User user = userService.findByUsername(Utils.USERNAME);
+        Task task = taskRepository.save(new Task("task1", "decs1", "full_access", null));
+        Answer answer = new Answer("hello world", ProgrammingLanguage.c);
+        Status status = new Status();
+        status.setResult("res1");
+        status.setExtended_information("ext1");
+
+        UserSolution solution = new UserSolution(System.currentTimeMillis(), user, task, answer, status);
+        UserSolution saved = userSolutionRepository.save(solution);
+        task.setSolutions(Collections.singletonList(saved));
+
+        this.mvc.perform(Utils.makeGetPathRequest("/task/{id}/results", task.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].task_name", Matchers.is("task1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].task_id", Matchers.is(task.getId().toString())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].user_name", Matchers.is(Utils.USERNAME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].user_id", Matchers.is(user.getId().toString())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].passed", Matchers.isEmptyOrNullString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].result", Matchers.is("res1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].message", Matchers.is("ext1")))
+                .andDo(Utils.generateDocsGetPath("task-results", taskPath, resultsDescr));
 
     }
 }

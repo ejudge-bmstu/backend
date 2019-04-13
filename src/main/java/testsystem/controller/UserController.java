@@ -15,7 +15,7 @@ public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
-    @GetMapping("/user/solutions")
+    @GetMapping("/user/results")
     @ResponseStatus(HttpStatus.OK)
     public List<ResultDTO> getResultsList() {
         return userService.getResults();

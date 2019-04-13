@@ -117,6 +117,8 @@ public class UserServiceImpl implements UserService {
                 results.add(new ResultDTO(
                         task.getName(),
                         task.getId().toString(),
+                        user.getUsername(),
+                        user.getId().toString(),
                         task.getTests().size(),
                         userSolution.getStatus().getPassed(),
                         userSolution.getStatus().getResult(),
