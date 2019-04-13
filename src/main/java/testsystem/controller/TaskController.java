@@ -5,14 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import testsystem.dto.TaskDTO;
-import testsystem.dto.TaskDescriptionDTO;
-import testsystem.dto.TaskListDTO;
-import testsystem.dto.TaskNewDTO;
+import testsystem.dto.*;
 import testsystem.service.TaskServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -50,5 +48,12 @@ public class TaskController {
                             @RequestParam("solution") @Valid @NotNull(message = "Файл с решением должен быть задан")
                                         MultipartFile file) {
         taskService.addSolution(taskDTO, file);
+    }
+
+    @GetMapping("/task/{id}/results")
+    @ResponseStatus(HttpStatus.OK)
+    @Secured("ROLE_ADMIN")
+    public List<ResultDTO> getResultsList(@PathVariable String id) {
+        return taskService.getResults(id);
     }
 }

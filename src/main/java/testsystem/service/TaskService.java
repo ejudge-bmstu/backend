@@ -2,10 +2,9 @@ package testsystem.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import testsystem.domain.Task;
-import testsystem.dto.TaskDTO;
-import testsystem.dto.TaskDescriptionDTO;
-import testsystem.dto.TaskListDTO;
-import testsystem.dto.TaskNewDTO;
+import testsystem.dto.*;
+
+import java.util.List;
 
 public interface TaskService {
 
@@ -16,4 +15,6 @@ public interface TaskService {
     Task addTask(TaskNewDTO taskDTO, String[] inputs, String[] outputs, MultipartFile file);
 
     void addSolution(TaskDTO taskDTO, MultipartFile multipartFile);
+
+    List<ResultDTO> getResults(String id);
 }

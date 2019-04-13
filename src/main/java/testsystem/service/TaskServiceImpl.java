@@ -139,6 +139,31 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    public List<ResultDTO> getResults(String id) {
+        Task task = validateTaskExists(validateId(id));
+
+        List<ResultDTO> results = new ArrayList<>();
+
+        if (task.getSolutions() != null) {
+            task.getSolutions().forEach(userSolution -> {
+                User user = userSolution.getUser();
+                results.add(new ResultDTO(
+                        task.getName(),
+                        task.getId().toString(),
+                        user.getUsername(),
+                        user.getId().toString(),
+                        task.getTests().size(),
+                        userSolution.getStatus().getPassed(),
+                        userSolution.getStatus().getResult(),
+                        userSolution.getStatus().getExtended_information(),
+                        userSolution.getSolution_date()));
+            });
+        }
+
+        return results;
+    }
+
     private void saveTests(Task task, List<Test> tests) {
         tests.forEach(test -> {
             test.setTask(task);
