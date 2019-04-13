@@ -132,3 +132,18 @@ include::{snippets}/results/http-response.adoc[]
 
 .Тело ответа
 include::{snippets}/results/response-fields.adoc[]
+
+[[results-task]]
+=== Просмотр результатов всех пользователей по задаче
+
+.Запрос
+include::{snippets}/task-results/http-request.adoc[]
+
+.Параметры запроса (path)
+include::{snippets}/task-results/path-parameters.adoc[]
+
+.Ответ
+include::{snippets}/task-results/http-response.adoc[]
+
+.Тело ответа
+include::{snippets}/task-results/response-fields.adoc[]

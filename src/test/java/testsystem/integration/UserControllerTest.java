@@ -48,8 +48,10 @@ public class UserControllerTest {
 
         resultsDescr = new FieldDescriptor[] {
                 fieldWithPath("[]").description("Список результатов"),
-                fieldWithPath("[].name").description("Название задачи"),
-                fieldWithPath("[].id").description("Идентификатор задачи"),
+                fieldWithPath("[].task_name").description("Название задачи"),
+                fieldWithPath("[].task_id").description("Идентификатор задачи"),
+                fieldWithPath("[].user_name").description("Имя пользователя, решившего задачу"),
+                fieldWithPath("[].user_id").description("Идентификатор пользователя, решившего задачу"),
                 fieldWithPath("[].total").description("Общее количество тестов"),
                 fieldWithPath("[].passed").description("Количество пройденных тестов"),
                 fieldWithPath("[].result").description("Результат проверки"),
@@ -62,7 +64,7 @@ public class UserControllerTest {
 
     @Test
     public void emptyResults() throws Exception {
-        this.mvc.perform(Utils.makeGetRequest("/user/solutions"))
+        this.mvc.perform(Utils.makeGetRequest("/user/results"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)));
@@ -82,16 +84,16 @@ public class UserControllerTest {
         UserSolution saved = userSolutionRepository.save(solution);
         user.getSolutions().add(saved);
 
-        this.mvc.perform(Utils.makeGetRequest("/user/solutions"))
+        this.mvc.perform(Utils.makeGetRequest("/user/results"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("task1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(task.getId().toString())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].task_name", Matchers.is("task1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].task_id", Matchers.is(task.getId().toString())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].passed", Matchers.isEmptyOrNullString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].result", Matchers.is("res1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].message", Matchers.is("ext1")))
-                .andDo(Utils.generateDocsPost("results", null, resultsDescr));
+                .andDo(Utils.generateDocsGet("results", null, resultsDescr));
 
     }
 
@@ -108,12 +110,14 @@ public class UserControllerTest {
         UserSolution saved = userSolutionRepository.save(solution);
         user.getSolutions().add(saved);
 
-        this.mvc.perform(Utils.makeGetRequest("/user/solutions"))
+        this.mvc.perform(Utils.makeGetRequest("/user/results"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("task1")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(task.getId().toString())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].task_name", Matchers.is("task1")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].task_id", Matchers.is(task.getId().toString())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].user_name", Matchers.is(Utils.USERNAME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].user_id", Matchers.is(user.getId().toString())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].passed", Matchers.isEmptyOrNullString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].result", Matchers.is("res1")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].message", Matchers.isEmptyOrNullString()));

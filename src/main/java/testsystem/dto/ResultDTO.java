@@ -7,8 +7,10 @@ import lombok.Data;
 @Data
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class ResultDTO {
-    private String name;
-    private String id;
+    private String task_name;
+    private String task_id;
+    private String user_name;
+    private String user_id;
     private Integer total;
     private Integer passed;
     private String result;
