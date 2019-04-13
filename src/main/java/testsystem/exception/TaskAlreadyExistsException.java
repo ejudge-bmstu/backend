@@ -6,6 +6,7 @@ public final class TaskAlreadyExistsException extends AppException {
     private final String categoryName;
 
     public TaskAlreadyExistsException(String taskName, String categoryName) {
+        super();
         this.taskName = taskName;
         this.categoryName = categoryName;
     }

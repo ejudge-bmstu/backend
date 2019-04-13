@@ -84,12 +84,6 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-    private boolean emailExist(String email) {
-        User user = userRepository.findByEmail(email);
-        return user != null;
-    }
-
-
     private EmailToken getVerificationToken(String token) {
         return tokenRepository.findByToken(token);
     }
@@ -100,8 +94,7 @@ public class UserServiceImpl implements UserService {
         tokenRepository.save(emailToken);
     }
 
-    @Override
-    public void activateUser(User user) {
+    private void activateUser(User user) {
         user.setEnabled(true);
         userRepository.save(user);
     }
@@ -131,7 +124,7 @@ public class UserServiceImpl implements UserService {
         return results;
     }
 
-    public User getCurrentUser() {
+    User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return findByUsername(username);
     }

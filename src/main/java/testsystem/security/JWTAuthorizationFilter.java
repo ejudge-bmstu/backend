@@ -19,7 +19,7 @@ import static testsystem.security.SecurityConstants.*;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     public JWTAuthorizationFilter(AuthenticationManager authManager, UserDetailsService service) {
         super(authManager);

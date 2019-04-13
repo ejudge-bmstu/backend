@@ -25,10 +25,10 @@ public class CategoryServiceImpl implements CategoryService {
     private TaskRepository taskRepository;
 
     @Override
-    public Category addNewCategory(CategoryDTO categoryDTO) {
+    public void addNewCategory(CategoryDTO categoryDTO) {
         Category category = Category.fromCategoryDTO(categoryDTO);
         validateCategoryNameExists(category.getName());
-        return categoryRepository.save(category);
+        categoryRepository.save(category);
     }
 
     @Override
@@ -50,14 +50,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category editCategory(CategoryDTO categoryDTO) {
+    public void editCategory(CategoryDTO categoryDTO) {
         UUID uuid = validateId(categoryDTO.getId());
         Category category = validateCategoryExists(uuid);
         if (!category.getName().equals(categoryDTO.getName()))
             validateCategoryNameExists(categoryDTO.getName());
 
         category.setName(categoryDTO.getName());
-        return categoryRepository.save(category);
+        categoryRepository.save(category);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.delete(category);
     }
 
-    public UUID validateId(String id) {
+    UUID validateId(String id) {
         UUID uuid;
         try {
             uuid = UUID.fromString(id);
@@ -81,7 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
         return uuid;
     }
 
-    public Category validateCategoryExists(UUID id) {
+    Category validateCategoryExists(UUID id) {
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (!categoryOptional.isPresent())
             throw new NoSuchCategoryException();

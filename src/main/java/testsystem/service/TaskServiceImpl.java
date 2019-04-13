@@ -89,17 +89,22 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task addTask(TaskNewDTO taskDTO, String[] inputs, String[] outputs, MultipartFile file) {
+    public void addTask(TaskNewDTO taskDTO, String[] inputs, String[] outputs, MultipartFile file) {
         String name = taskDTO.getName();
         String description = taskDTO.getDescription();
         String access = taskDTO.getAccess_report();
 
-        UUID uuid = categoryService.validateId(taskDTO.getCategory());
-        Category category = categoryService.validateCategoryExists(uuid);
+        Task task;
+        if (taskDTO.getCategory() != null) {
+            UUID uuid = categoryService.validateId(taskDTO.getCategory());
+            Category category = categoryService.validateCategoryExists(uuid);
 
-        validateTaskNameExists(name, category);
+            validateTaskNameExists(name, category);
 
-        Task task = new Task(name, description, access, category);
+            task = new Task(name, description, access, category);
+        } else {
+            task = new Task(name, description, access, null);
+        }
 
         List<Test> tests = unzipFileAndGetTests(file);
         Task saved = taskRepository.save(task);
@@ -107,8 +112,6 @@ public class TaskServiceImpl implements TaskService {
         saveTests(saved, tests);
         saveLimits(saved, taskDTO);
         saveExamples(saved, inputs, outputs);
-
-        return taskRepository.findById(saved.getId()).get();
     }
 
     @Override
@@ -197,6 +200,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private List<Test> unzipFileAndGetTests(MultipartFile multipartFile) {
         File file = null;
         List<Test> testsFromFile;

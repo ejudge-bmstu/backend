@@ -3,6 +3,7 @@ package testsystem.exception;
 public final class NoSuchEmailTokenException extends AppException {
 
     public NoSuchEmailTokenException() {
+        super();
     }
 
     @Override

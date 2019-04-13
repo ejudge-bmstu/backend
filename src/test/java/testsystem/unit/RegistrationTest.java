@@ -38,7 +38,7 @@ public class RegistrationTest {
     private User user;
     private Profile profile;
     private UserDTO userDTO;
-    private PasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Before
     public void init() {

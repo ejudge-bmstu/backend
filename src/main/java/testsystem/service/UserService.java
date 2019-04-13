@@ -17,7 +17,5 @@ public interface UserService {
 
     void createEmailToken(User user, String token);
 
-    void activateUser(User user);
-
     List<ResultDTO> getResults();
 }

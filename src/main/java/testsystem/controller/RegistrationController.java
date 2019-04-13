@@ -22,7 +22,7 @@ import static testsystem.security.SecurityConstants.SIGN_UP_CONFIRM_URL;
 import static testsystem.security.SecurityConstants.SIGN_UP_URL;
 
 @RestController
-public class RegistrationController {
+class RegistrationController {
 
     @Autowired
     private UserServiceImpl userService;

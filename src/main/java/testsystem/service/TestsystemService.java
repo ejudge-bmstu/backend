@@ -9,8 +9,8 @@ import java.net.URL;
 
 @Service
 public class TestsystemService {
-    private String host;
-    private String port;
+    private final String host;
+    private final String port;
 
     public TestsystemService(Environment env) {
         this.host = env.getProperty("testsystem.address");

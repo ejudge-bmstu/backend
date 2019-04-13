@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
-public class TaskController {
+class TaskController {
     @Autowired
     private TaskServiceImpl taskService;
 

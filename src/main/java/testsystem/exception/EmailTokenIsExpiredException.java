@@ -3,6 +3,7 @@ package testsystem.exception;
 public final class EmailTokenIsExpiredException extends AppException {
 
     public EmailTokenIsExpiredException() {
+        super();
     }
 
     @Override
